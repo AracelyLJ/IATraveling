@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ara.iatraveling.ml.Model;
+import com.ara.iatraveling.ml.Model7;
 
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
@@ -166,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         try {
             Bitmap image = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-            Model model = Model.newInstance(getApplicationContext());
+            Model7 model = Model7.newInstance(getApplicationContext());
 
 //            Bitmap image = (Bitmap) data.getExtras().get("data");
             int dimension = Math.min(image.getWidth(), image.getHeight());
@@ -197,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             inputFeature0.loadBuffer(byteBuffer);
 
             // Runs model inference and gets result.
-            Model.Outputs outputs = model.process(inputFeature0);
+            Model7.Outputs outputs = model.process(inputFeature0);
             TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
 
             float[] confidences = outputFeature0.getFloatArray();
@@ -210,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     maxPos = i;
                 }
             }
-            String[] classes = {"China", "India", "Mexico"};
+            String[] classes = {"agra", "cdmx", "dubai", "newyork", "paris", "shanhaiguan", "sydney"};
 //            tv_info.setText(classes[maxPos]);
             Toast.makeText(this, classes[maxPos], Toast.LENGTH_SHORT).show();
 
