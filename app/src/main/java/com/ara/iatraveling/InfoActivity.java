@@ -3,7 +3,10 @@ package com.ara.iatraveling;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -12,9 +15,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ara.models.MessageService;
+import com.ara.models.City;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -25,6 +34,8 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView img_photo_city;
 
     private CardView btn_places_to_visit, btn_food, btn_history, btn_map;
+    City city;
+    String city_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,13 +54,18 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
         btn_history.setOnClickListener(this);
         btn_map.setOnClickListener(this);
 
+        city = new City();
+        city_name = "cdmx";
+
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String strImage = extras.getString("imageUri");
-            String city_name = extras.getString("city_name");
+            city_name = extras.getString("city_name");
             Uri uriImage = Uri.parse(strImage);
             tv_city_name.setText(city_name);
             img_photo_city.setImageURI(uriImage);
+            getDatabase();
+
         }
 
 
@@ -61,28 +77,61 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.btn_places_to_visit) {
-            Toast.makeText(this, "PLACES", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, city.getVisit(), Toast.LENGTH_SHORT).show();
+            showInfo(city.getVisit());
         }  else if (id == R.id.btn_food) {
-            Toast.makeText(this, "FOOD", Toast.LENGTH_SHORT).show();
+            showInfo(city.getFood());
+            Toast.makeText(this, city.getFood(), Toast.LENGTH_SHORT).show();
         } else if (id == R.id.btn_history) {
-            Toast.makeText(this, "HISTORY", Toast.LENGTH_SHORT).show();
+            showInfo(city.getHistory());
+            Toast.makeText(this, city.getHistory(), Toast.LENGTH_SHORT).show();
         } else if (id == R.id.btn_map) {
+            Toast.makeText(this, city.getMap(), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(InfoActivity.this, MapActivity.class);
+            intent.putExtra("coordenates",city.getMap());
             startActivity(intent);
         }
     }
 
-    public void postData() {
-        String API_ROUTE = "https://us-central1-aiplatform.googleapis.com/v1/projects/aitraveling" +
-                "/locations/us-central1/publishers/google/models/gemini-1.0-pro:streamGenerateContent?alt=sse";
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(API_ROUTE)
-                // as we are sending data in json format so
-                // we have to add Gson converter factory
-                .addConverterFactory(GsonConverterFactory.create())
-                // at last we are building our retrofit builder.
-                .build();
-
-        MessageService messageService = retrofit.create(MessageService.class);
+    public void getDatabase() {
+        FirebaseDatabase.getInstance().
+                getReference("cities")
+                .child(city_name)
+                .get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
+                    @Override
+                    public void onSuccess(DataSnapshot dataSnapshot) {
+                        Toast.makeText(InfoActivity.this, Objects.requireNonNull(dataSnapshot.getValue()).toString(), Toast.LENGTH_SHORT).show();
+                        String food = Objects.requireNonNull(dataSnapshot.child("food").getValue()).toString();
+                        String history = Objects.requireNonNull(dataSnapshot.child("history").getValue()).toString();
+                        String map = Objects.requireNonNull(dataSnapshot.child("map").getValue()).toString();
+                        String title = Objects.requireNonNull(dataSnapshot.child("title").getValue()).toString();
+                        String visit = Objects.requireNonNull(dataSnapshot.child("visit").getValue()).toString();
+//                        String map = "39.9075, 116.39723";
+                        city = new City(food, history, map, title, visit);
+                        tv_city_name.setText(city.getTitle());
+                    }
+                });
     }
+
+    public void showInfo(String info) {
+        Dialog dialog = new Dialog(InfoActivity.this);
+        //se asigna el layout
+        dialog.setContentView(R.layout.cardview_dialog);
+        TextView tv_city_title = dialog.findViewById(R.id.tv_city_title);
+        TextView tv_info = dialog.findViewById(R.id.tv_info);
+        ImageView imgCloseDialog = dialog.findViewById(R.id.imgCloseDialog);
+
+        tv_city_title.setText(city.getTitle().toUpperCase());
+        tv_info.setText(info.replace(".","\\\n\\\n\\\n").replace("\\",""));
+        imgCloseDialog.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.setCancelable(false);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
+    }
+
 }

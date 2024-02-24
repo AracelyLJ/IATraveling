@@ -23,19 +23,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ara.iatraveling.ml.Model;
 import com.ara.iatraveling.ml.Model5;
-import com.ara.iatraveling.ml.Model6;
-import com.ara.iatraveling.ml.Model7;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage;
-import com.google.firebase.ml.naturallanguage.smartreply.FirebaseSmartReply;
-import com.google.firebase.ml.naturallanguage.smartreply.FirebaseTextMessage;
-import com.google.mlkit.nl.smartreply.SmartReply;
-import com.google.mlkit.nl.smartreply.SmartReplyGenerator;
-import com.google.mlkit.nl.smartreply.SmartReplySuggestionResult;
-import com.google.mlkit.nl.smartreply.TextMessage;
 
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
@@ -159,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 uri_image = data.getData();
                 if (null != uri_image) {
                     // update the preview image in the layout
-                    iv_photo.setImageURI(uri_image);
+//                    iv_photo.setImageURI(uri_image);
                 }
             } else if (requestCode == TAKE_PICTURE) {
                 Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
@@ -167,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 uri_image = Uri.fromFile(f);
                 if (null != uri_image) {
                     // update the preview image in the layout
-                    iv_photo.setImageURI(uri_image);
+//                    iv_photo.setImageURI(uri_image);
                 } else {
                     Toast.makeText(this, "empty image", Toast.LENGTH_SHORT).show();
                 }
@@ -230,37 +218,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             // Releases model resources if no longer used.
             model.close();
-
-            /*List<FirebaseTextMessage> conversation = new ArrayList<>();
-            conversation.add(FirebaseTextMessage.createForLocalUser(
-                    "how are you?", System.currentTimeMillis()));
-
-            FirebaseSmartReply smartReply = FirebaseNaturalLanguage.getInstance().getSmartReply();
-            smartReply.suggestReplies(conversation)
-                    .addOnSuccessListener(new OnSuccessListener<com.google.firebase.ml.naturallanguage.smartreply.SmartReplySuggestionResult>() {
-                        @Override
-                        public void onSuccess(com.google.firebase.ml.naturallanguage.smartreply.SmartReplySuggestionResult result) {
-                            if (result.getStatus() == SmartReplySuggestionResult.STATUS_NOT_SUPPORTED_LANGUAGE) {
-                                // The conversation's language isn't supported, so the
-                                // the result doesn't contain any suggestions.
-                                Toast.makeText(MainActivity.this, "NOT SUPORTED", Toast.LENGTH_SHORT).show();
-                            } else if (result.getStatus() == SmartReplySuggestionResult.STATUS_SUCCESS) {
-                                // Task completed successfully
-                                // ...
-                                for (int i=0; i<result.getSuggestions().size(); i++) {
-                                    Toast.makeText(MainActivity.this, result.getSuggestions().get(i).getText(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(Exception e) {
-                            // Task failed with an exception
-                            // ...
-                            Toast.makeText(MainActivity.this, "FAILED", Toast.LENGTH_SHORT).show();
-                        }
-                    });*/
 
             // Go to next activity
             Intent intent = new Intent(MainActivity.this, InfoActivity.class);
