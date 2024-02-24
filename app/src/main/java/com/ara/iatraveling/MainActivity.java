@@ -24,8 +24,18 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ara.iatraveling.ml.Model;
+import com.ara.iatraveling.ml.Model5;
 import com.ara.iatraveling.ml.Model6;
 import com.ara.iatraveling.ml.Model7;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.ml.naturallanguage.FirebaseNaturalLanguage;
+import com.google.firebase.ml.naturallanguage.smartreply.FirebaseSmartReply;
+import com.google.firebase.ml.naturallanguage.smartreply.FirebaseTextMessage;
+import com.google.mlkit.nl.smartreply.SmartReply;
+import com.google.mlkit.nl.smartreply.SmartReplyGenerator;
+import com.google.mlkit.nl.smartreply.SmartReplySuggestionResult;
+import com.google.mlkit.nl.smartreply.TextMessage;
 
 import org.tensorflow.lite.DataType;
 import org.tensorflow.lite.support.tensorbuffer.TensorBuffer;
@@ -35,7 +45,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private ImageView iv_photo;
@@ -168,7 +180,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         try {
             Bitmap image = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-            Model6 model = Model6.newInstance(getApplicationContext());
+            Model5 model = Model5.newInstance(getApplicationContext());
 
 //            Bitmap image = (Bitmap) data.getExtras().get("data");
             int dimension = Math.min(image.getWidth(), image.getHeight());
@@ -199,7 +211,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             inputFeature0.loadBuffer(byteBuffer);
 
             // Runs model inference and gets result.
-            Model6.Outputs outputs = model.process(inputFeature0);
+            Model5.Outputs outputs = model.process(inputFeature0);
             TensorBuffer outputFeature0 = outputs.getOutputFeature0AsTensorBuffer();
 
             float[] confidences = outputFeature0.getFloatArray();
@@ -212,12 +224,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     maxPos = i;
                 }
             }
-            String[] classes = {"agra", "cdmx", "dubai", "newyork", "paris", "shanhaiguan"};
+            String[] classes = {"agra", "cdmx", "newyork", "paris", "shanhaiguan"};
 //            tv_info.setText(classes[maxPos]);
             Toast.makeText(this, classes[maxPos], Toast.LENGTH_SHORT).show();
 
             // Releases model resources if no longer used.
             model.close();
+
+            /*List<FirebaseTextMessage> conversation = new ArrayList<>();
+            conversation.add(FirebaseTextMessage.createForLocalUser(
+                    "how are you?", System.currentTimeMillis()));
+
+            FirebaseSmartReply smartReply = FirebaseNaturalLanguage.getInstance().getSmartReply();
+            smartReply.suggestReplies(conversation)
+                    .addOnSuccessListener(new OnSuccessListener<com.google.firebase.ml.naturallanguage.smartreply.SmartReplySuggestionResult>() {
+                        @Override
+                        public void onSuccess(com.google.firebase.ml.naturallanguage.smartreply.SmartReplySuggestionResult result) {
+                            if (result.getStatus() == SmartReplySuggestionResult.STATUS_NOT_SUPPORTED_LANGUAGE) {
+                                // The conversation's language isn't supported, so the
+                                // the result doesn't contain any suggestions.
+                                Toast.makeText(MainActivity.this, "NOT SUPORTED", Toast.LENGTH_SHORT).show();
+                            } else if (result.getStatus() == SmartReplySuggestionResult.STATUS_SUCCESS) {
+                                // Task completed successfully
+                                // ...
+                                for (int i=0; i<result.getSuggestions().size(); i++) {
+                                    Toast.makeText(MainActivity.this, result.getSuggestions().get(i).getText(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(Exception e) {
+                            // Task failed with an exception
+                            // ...
+                            Toast.makeText(MainActivity.this, "FAILED", Toast.LENGTH_SHORT).show();
+                        }
+                    });*/
 
             // Go to next activity
             Intent intent = new Intent(MainActivity.this, InfoActivity.class);

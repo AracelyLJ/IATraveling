@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "599278060751",
+    "project_id": "aitraveling",
+    "storage_bucket": "aitraveling.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:599278060751:android:7ad064e0031f80189363ba",
+        "android_client_info": {
+          "package_name": "com.ara.iatraveling"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCliTZD6J6Vh4W3A2qeq4xtyNYD_0cE-b4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

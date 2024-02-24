@@ -60,6 +60,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDRpbAhL7OudHmD138ZpWtC8VW8drpQNbg"/>
+        <meta-data
+            android:name="com.google.mlkit.vision.DEPENDENCIES"
+            android:value="smart_reply" />
     </application>
 
 </manifest>

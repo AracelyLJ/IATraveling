@@ -12,7 +12,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ara.models.MessageService;
+
 import java.util.ArrayList;
+
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class InfoActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -47,6 +52,8 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
             img_photo_city.setImageURI(uriImage);
         }
 
+
+
     }
 
 
@@ -63,5 +70,19 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(InfoActivity.this, MapActivity.class);
             startActivity(intent);
         }
+    }
+
+    public void postData() {
+        String API_ROUTE = "https://us-central1-aiplatform.googleapis.com/v1/projects/aitraveling" +
+                "/locations/us-central1/publishers/google/models/gemini-1.0-pro:streamGenerateContent?alt=sse";
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(API_ROUTE)
+                // as we are sending data in json format so
+                // we have to add Gson converter factory
+                .addConverterFactory(GsonConverterFactory.create())
+                // at last we are building our retrofit builder.
+                .build();
+
+        MessageService messageService = retrofit.create(MessageService.class);
     }
 }
