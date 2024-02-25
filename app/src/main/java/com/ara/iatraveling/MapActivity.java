@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -37,8 +36,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         for (String s: list_str_coordenates) {
             coordenates.add(Float.valueOf(s));
         }
-        Toast.makeText(this, coordenates.toString(), Toast.LENGTH_SHORT).show();
-
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.fragment_map);
         mapFragment.getMapAsync(this);
 

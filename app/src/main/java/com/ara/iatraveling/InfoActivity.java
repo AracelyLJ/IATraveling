@@ -13,7 +13,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ara.models.City;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -77,16 +76,12 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.btn_places_to_visit) {
-            Toast.makeText(this, city.getVisit(), Toast.LENGTH_SHORT).show();
             showInfo(city.getVisit());
         }  else if (id == R.id.btn_food) {
             showInfo(city.getFood());
-            Toast.makeText(this, city.getFood(), Toast.LENGTH_SHORT).show();
         } else if (id == R.id.btn_history) {
             showInfo(city.getHistory());
-            Toast.makeText(this, city.getHistory(), Toast.LENGTH_SHORT).show();
         } else if (id == R.id.btn_map) {
-            Toast.makeText(this, city.getMap(), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(InfoActivity.this, MapActivity.class);
             intent.putExtra("coordenates",city.getMap());
             startActivity(intent);
@@ -100,7 +95,6 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
                 .get().addOnSuccessListener(new OnSuccessListener<DataSnapshot>() {
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
-                        Toast.makeText(InfoActivity.this, Objects.requireNonNull(dataSnapshot.getValue()).toString(), Toast.LENGTH_SHORT).show();
                         String food = Objects.requireNonNull(dataSnapshot.child("food").getValue()).toString();
                         String history = Objects.requireNonNull(dataSnapshot.child("history").getValue()).toString();
                         String map = Objects.requireNonNull(dataSnapshot.child("map").getValue()).toString();
@@ -122,7 +116,7 @@ public class InfoActivity extends AppCompatActivity implements View.OnClickListe
         ImageView imgCloseDialog = dialog.findViewById(R.id.imgCloseDialog);
 
         tv_city_title.setText(city.getTitle().toUpperCase());
-        tv_info.setText(info.replace(".","\\\n\\\n\\\n").replace("\\",""));
+        tv_info.setText(info.replace("**","\\\n\\\n").replace("\\",""));
         imgCloseDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

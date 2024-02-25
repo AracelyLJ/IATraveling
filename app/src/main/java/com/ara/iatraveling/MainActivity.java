@@ -214,8 +214,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             String[] classes = {"agra", "cdmx", "newyork", "paris", "shanhaiguan"};
 //            tv_info.setText(classes[maxPos]);
-            Toast.makeText(this, classes[maxPos], Toast.LENGTH_SHORT).show();
-
             // Releases model resources if no longer used.
             model.close();
 
